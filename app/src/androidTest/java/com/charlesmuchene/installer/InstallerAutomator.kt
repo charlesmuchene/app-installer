@@ -11,6 +11,7 @@ import android.support.test.uiautomator.*
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,12 +26,13 @@ import org.junit.runner.RunWith
 @SdkSuppress(minSdkVersion = Build.VERSION_CODES.JELLY_BEAN_MR2)
 class InstallerAutomator {
 
-    private val openDrawerText = "Open navigation drawer"
+    // TODO Expose these configurable user settings
+    private val networkSSID = "322412373536"
+    private val networkPassword = "######"
+
     private val settingsPackage = "com.android.settings"
-    private val gmailPackage = "com.google.android.gm"
     private val accountsText = "Accounts"
     private val addAccount = "Add account"
-    private val settingsText = "Settings"
     private val googleText = "Google"
 
     private lateinit var device: UiDevice
@@ -43,31 +45,48 @@ class InstallerAutomator {
         context = InstrumentationRegistry.getContext()
     }
 
-    @Test
-    @Throws(UiObjectNotFoundException::class)
-    fun openSettings() {
+    /**
+     * Open settings
+     */
+    private fun openSettings() {
         device.pressHome()
-
         val intent = context.packageManager.getLaunchIntentForPackage(settingsPackage).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
         context.startActivity(intent)
         device.wait(Until.hasObject(By.pkg(settingsPackage).depth(0)), timeout)
+        device.waitForIdle()
+    }
 
+    @Test
+    @Throws(UiObjectNotFoundException::class)
+    fun connectToWifi() {
+        device.pressHome()
+        device.openQuickSettings()
+        val wifiButtonDescription = "Wi-Fi On,,Open Wi-Fi settings."
+        val wifiSelector = UiSelector().className(Button::class.java).description(wifiButtonDescription)
+        device.findObject(wifiSelector)?.longClick()
+        device.waitForIdle(timeout)
+        device.wait(Until.findObject(By.clazz(TextView::class.java).text(networkSSID)), timeout)
+        device.findObject(UiSelector().text(networkSSID)).click()
+        val passwordInput = device.findObject(UiSelector().resourceId("com.android.settings:id/password"))
+        passwordInput.text = networkPassword
+        device.findObject(By.clazz(Button::class.java).text("CONNECT")).click()
+
+        // TODO Wait for connectivity
+
+    }
+
+    @Test
+    @Throws(UiObjectNotFoundException::class)
+    fun addGoogleAccount() {
+        openSettings()
         UiScrollable(UiSelector().scrollable(true)).run {
             scrollForward()
             scrollTextIntoView(accountsText)
         }
-
         device.findObject(UiSelector().text(accountsText)).click()
-//        device.findObject(UiSelector().text("Accounts")).click()
         device.findObject(UiSelector().text(addAccount)).click()
-//
-//        UiScrollable(UiSelector().scrollable(true)).run {
-//            scrollForward()
-//            scrollTextIntoView(googleText)
-//        }
-
         device.findObject(UiSelector().text(googleText)).click()
 
         device.wait(Until.findObject(By.clazz(WebView::class.java)), timeout)
@@ -87,27 +106,6 @@ class InstallerAutomator {
             waitForExists(timeout)
             text = "password"
         }
-
-    }
-
-    @Test
-    @Throws(UiObjectNotFoundException::class)
-    fun addAccountToGmail() {
-        device.pressHome()
-        val intent = context.packageManager.getLaunchIntentForPackage(gmailPackage).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
-        context.startActivity(intent)
-        device.wait(Until.hasObject(By.pkg(gmailPackage).depth(0)), timeout)
-        device.findObject(By.desc(openDrawerText)).click()
-        UiScrollable(UiSelector().scrollable(true)).run {
-            scrollForward()
-            scrollTextIntoView(settingsText)
-        }
-        device.findObject(UiSelector().text(settingsText)).clickAndWaitForNewWindow()
-        device.findObject(UiSelector().text(addAccount)).clickAndWaitForNewWindow()
-        device.findObject(UiSelector().text(googleText)).clickAndWaitForNewWindow()
-
     }
 
 }
