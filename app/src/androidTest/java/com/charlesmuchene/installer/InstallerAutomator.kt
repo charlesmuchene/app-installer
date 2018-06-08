@@ -8,6 +8,7 @@ import android.support.test.filters.LargeTest
 import android.support.test.filters.SdkSuppress
 import android.support.test.runner.AndroidJUnit4
 import android.support.test.uiautomator.*
+import android.view.View
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.EditText
@@ -29,6 +30,10 @@ class InstallerAutomator {
     // TODO Expose these configurable user settings
     private val networkSSID = "322412373536"
     private val networkPassword = "######"
+
+    private val accountEmail = "safeboda13"
+    private val accountPassword = "safetester"
+
 
     private val settingsPackage = "com.android.settings"
     private val accountsText = "Accounts"
@@ -81,6 +86,9 @@ class InstallerAutomator {
     @Throws(UiObjectNotFoundException::class)
     fun addGoogleAccount() {
         openSettings()
+
+        // TODO How can we go direct to accounts item?
+
         UiScrollable(UiSelector().scrollable(true)).run {
             scrollForward()
             scrollTextIntoView(accountsText)
@@ -88,24 +96,31 @@ class InstallerAutomator {
         device.findObject(UiSelector().text(accountsText)).click()
         device.findObject(UiSelector().text(addAccount)).click()
         device.findObject(UiSelector().text(googleText)).click()
-
+        device.waitForIdle()
         device.wait(Until.findObject(By.clazz(WebView::class.java)), timeout)
         device.findObject(UiSelector().instance(0)
-                .className(EditText::class.java)).apply {
+                .className(EditText::class.java).text("Email or phone")).apply {
             waitForExists(timeout)
-            text = "we@sb.them"
+            text = accountEmail
         }
+        device.findObject(By.descContains("NEXT").res("identifierNext")).click()
+        device.waitForIdle()
 
-        device.findObject(UiSelector().instance(0).className(Button::class.java)).apply {
+        device.findObject(UiSelector().instance(0)
+                .className(EditText::class.java).resourceId("password")).apply {
+            waitForExists(timeout)
+            text = accountPassword
+        }
+        device.findObject(By.descContains("NEXT").res("passwordNext")).click()
+        device.waitForIdle()
+        device.findObject(UiSelector().className(View::class.java).resourceId("next")).apply {
             waitForExists(timeout)
             click()
         }
+        device.waitForIdle()
 
-        device.findObject(UiSelector().instance(0)
-                .className(EditText::class.java)).apply {
-            waitForExists(timeout)
-            text = "password"
-        }
+        // TODO Add a scroll to enable the next button
+
     }
 
 }
