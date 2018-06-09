@@ -3,11 +3,13 @@ package com.charlesmuchene.installer
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import android.support.test.InstrumentationRegistry
 import android.support.test.filters.LargeTest
 import android.support.test.filters.SdkSuppress
 import android.support.test.runner.AndroidJUnit4
 import android.support.test.uiautomator.*
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.webkit.WebView
 import android.widget.Button
@@ -36,9 +38,6 @@ class InstallerAutomator {
 
 
     private val settingsPackage = "com.android.settings"
-    private val accountsText = "Accounts"
-    private val addAccount = "Add account"
-    private val googleText = "Google"
 
     private lateinit var device: UiDevice
     private lateinit var context: Context
@@ -85,14 +84,13 @@ class InstallerAutomator {
     @Test
     @Throws(UiObjectNotFoundException::class)
     fun addGoogleAccount() {
-        openSettings()
-        UiScrollable(UiSelector().scrollable(true)).run {
-            flingForward()
-            scrollTextIntoView(accountsText)
+        device.pressHome()
+        val intent = Intent(android.provider.Settings.ACTION_ADD_ACCOUNT).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
         }
-        device.findObject(UiSelector().text(accountsText)).click()
-        device.findObject(UiSelector().text(addAccount)).click()
-        device.findObject(UiSelector().text(googleText)).click()
+        context.startActivity(intent)
+        device.wait(Until.hasObject(By.pkg(settingsPackage).depth(0)), timeout)
         device.waitForIdle()
         device.wait(Until.findObject(By.clazz(WebView::class.java)), timeout)
         device.findObject(UiSelector().instance(0)
@@ -115,10 +113,18 @@ class InstallerAutomator {
             click()
         }
         device.waitForIdle()
-        
 
-        // TODO Add a scroll to enable the next button
-
+        UiScrollable(UiSelector().scrollable(true)).run {
+            flingForward()
+            scrollForward()
+        }
+        device.waitForIdle()
+        device.findObject(UiSelector().text("NEXT").className(Button::class.java))?.apply {
+            waitForExists(timeout)
+            click()
+        }
+        device.waitForIdle()
+        device.pressHome()
     }
 
 }
