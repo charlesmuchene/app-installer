@@ -86,11 +86,8 @@ class InstallerAutomator {
     @Throws(UiObjectNotFoundException::class)
     fun addGoogleAccount() {
         openSettings()
-
-        // TODO How can we go direct to accounts item?
-
         UiScrollable(UiSelector().scrollable(true)).run {
-            scrollForward()
+            flingForward()
             scrollTextIntoView(accountsText)
         }
         device.findObject(UiSelector().text(accountsText)).click()
@@ -118,6 +115,7 @@ class InstallerAutomator {
             click()
         }
         device.waitForIdle()
+        
 
         // TODO Add a scroll to enable the next button
 
