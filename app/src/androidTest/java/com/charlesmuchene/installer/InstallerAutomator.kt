@@ -2,6 +2,7 @@ package com.charlesmuchene.installer
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.support.test.InstrumentationRegistry
@@ -12,9 +13,7 @@ import android.support.test.uiautomator.*
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.webkit.WebView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,17 +48,26 @@ class InstallerAutomator {
         context = InstrumentationRegistry.getContext()
     }
 
-    /**
-     * Open settings
-     */
-    private fun openSettings() {
+    @Test
+    @Throws(UiObjectNotFoundException::class)
+    fun resetDeviceBridge() {
         device.pressHome()
-        val intent = context.packageManager.getLaunchIntentForPackage(settingsPackage).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            data = Uri.fromParts("package", settingsPackage, null)
         }
         context.startActivity(intent)
-        device.wait(Until.hasObject(By.pkg(settingsPackage).depth(0)), timeout)
         device.waitForIdle()
+        device.findObject(UiSelector().text("Storage")).click()
+        device.findObject(UiSelector().text("CLEAR DATA")
+                .className(Button::class.java)).clickAndWaitForNewWindow()
+        device.findObject(UiSelector().text("OK").className(Button::class.java)).click()
+        device.pressHome()
+        device.openNotification()
+        device.findObject(UiSelector().className(TextView::class.java)
+                .text("USB debugging connected")).clickAndWaitForNewWindow()
+        device.findObject(UiSelector().className(Switch::class.java).instance(0)
+                .checked(true)).click()
     }
 
     @Test
