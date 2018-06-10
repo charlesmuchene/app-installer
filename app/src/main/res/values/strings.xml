@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">SB Installer</string>
     <string name="action_settings">Settings</string>
+    <string name="checking_status">Checking status…</string>
     <string name="sb_driver_logo">Sb Driver Logo</string>
     <string name="your_city_ride">Your City Ride</string>
+    <string name="not_installed">SB Driver App not installed</string>
+    <string name="app_installed">Yay! SB Driver is installed :D</string>
 </resources>

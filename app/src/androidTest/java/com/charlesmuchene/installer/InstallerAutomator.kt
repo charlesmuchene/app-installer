@@ -13,6 +13,10 @@ import android.support.test.uiautomator.*
 import android.view.View
 import android.webkit.WebView
 import android.widget.*
+import com.charlesmuchene.installer.utils.ACCOUNT_EMAIL
+import com.charlesmuchene.installer.utils.ACCOUNT_PASSWORD
+import com.charlesmuchene.installer.utils.NETWORK_PASSWORD
+import com.charlesmuchene.installer.utils.NETWORK_SSID
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,7 +27,7 @@ import org.junit.runner.RunWith
  */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-@SdkSuppress(minSdkVersion = Build.VERSION_CODES.JELLY_BEAN_MR2)
+@SdkSuppress(minSdkVersion = Build.VERSION_CODES.KITKAT)
 class InstallerAutomator {
 
     private lateinit var networkSSID: String

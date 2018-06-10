@@ -3,4 +3,10 @@
     <color name="colorPrimary">#FF9606</color>
     <color name="colorPrimaryDark">#fb822c</color>
     <color name="colorAccent">#0BC7B4</color>
+
+    <!-- Status text view text colors -->
+    <color name="colorChecking">@android:color/darker_gray</color>
+    <color name="colorNotInstalled">@android:color/holo_red_dark</color>
+    <color name="colorInstalled">@android:color/holo_green_dark</color>
+
 </resources>
