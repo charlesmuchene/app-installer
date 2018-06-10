@@ -10,7 +10,6 @@ import android.support.test.filters.LargeTest
 import android.support.test.filters.SdkSuppress
 import android.support.test.runner.AndroidJUnit4
 import android.support.test.uiautomator.*
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.webkit.WebView
 import android.widget.*
@@ -27,28 +26,36 @@ import org.junit.runner.RunWith
 @SdkSuppress(minSdkVersion = Build.VERSION_CODES.JELLY_BEAN_MR2)
 class InstallerAutomator {
 
-    // TODO Expose these configurable user settings
-    private val networkSSID = "322412373536"
-    private val networkPassword = "######"
-
-    private val accountEmail = "safeboda13"
-    private val accountPassword = "safetester"
+    private lateinit var networkSSID: String
+    private lateinit var accountEmail: String
+    private lateinit var accountPassword: String
+    private lateinit var networkPassword: String
 
     private val settingsPackage = "com.android.settings"
     private lateinit var device: UiDevice
     private lateinit var context: Context
     private val timeout = 5000L
 
-    @Before
-    fun setup() {
-        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        context = InstrumentationRegistry.getContext()
+    init {
+        parseArguments()
     }
 
-    @Test
-    @Throws(Exception::class)
-    fun showMe() {
-        throw IllegalArgumentException("Afdadf")
+    @Before
+    fun setup() {
+        context = InstrumentationRegistry.getContext()
+        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    }
+
+    /**
+     * Parse test arguments
+     */
+    private fun parseArguments() {
+        with(InstrumentationRegistry.getArguments()) {
+            networkSSID = getString(NETWORK_SSID) ?: ""
+            accountEmail = getString(ACCOUNT_EMAIL) ?: ""
+            networkPassword = getString(NETWORK_PASSWORD) ?: ""
+            accountPassword = getString(ACCOUNT_PASSWORD) ?: ""
+        }
     }
 
     @Test

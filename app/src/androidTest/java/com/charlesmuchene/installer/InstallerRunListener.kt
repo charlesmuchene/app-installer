@@ -11,7 +11,7 @@ class InstallerRunListener : RunListener() {
     override fun testFailure(failure: Failure?) {
         super.testFailure(failure)
         failure?.let { fail ->
-            // Hack: Inevitable failure since we're disconnect adb
+            // Hack: Inevitable failure since we've disconnected adb
             if (fail.description.methodName == "resetDeviceBridge") {
                 println("ResetDeviceBridge run successfully")
             }

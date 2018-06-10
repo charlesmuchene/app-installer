@@ -1,0 +1,8 @@
+@file:JvmName("Constants")
+
+package com.charlesmuchene.installer
+
+const val NETWORK_SSID = "network_ssid"
+const val ACCOUNT_EMAIL = "account_email"
+const val NETWORK_PASSWORD = "network_password"
+const val ACCOUNT_PASSWORD = "account_password"
