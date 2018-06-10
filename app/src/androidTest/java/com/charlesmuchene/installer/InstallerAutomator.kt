@@ -19,9 +19,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Instrumented test, which will execute on an Android device.
+ * Automates SB Driver App requirements
  *
- * See [testing documentation](http://d.android.com/tools/testing).
  */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -35,9 +34,7 @@ class InstallerAutomator {
     private val accountEmail = "safeboda13"
     private val accountPassword = "safetester"
 
-
     private val settingsPackage = "com.android.settings"
-
     private lateinit var device: UiDevice
     private lateinit var context: Context
     private val timeout = 5000L
@@ -46,6 +43,12 @@ class InstallerAutomator {
     fun setup() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         context = InstrumentationRegistry.getContext()
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun showMe() {
+        throw IllegalArgumentException("Afdadf")
     }
 
     @Test
