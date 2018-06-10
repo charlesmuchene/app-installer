@@ -81,22 +81,24 @@ class InstallerAutomator {
     }
 
     @Test
-    @Throws(UiObjectNotFoundException::class)
+    @Throws(UiObjectNotFoundException::class, IllegalArgumentException::class)
     fun connectToWifi() {
         device.pressHome()
-        device.openQuickSettings()
-        val wifiButtonDescription = "Wi-Fi On,,Open Wi-Fi settings."
-        val wifiSelector = UiSelector().className(Button::class.java).description(wifiButtonDescription)
-        device.findObject(wifiSelector)?.longClick()
-        device.waitForIdle(timeout)
+        if (networkSSID.isBlank())
+            throw IllegalArgumentException("Provide a network SSID or make sure your WIFI is discoverable")
+        val intent = Intent(android.provider.Settings.ACTION_WIFI_SETTINGS).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
+        device.waitForIdle()
         device.wait(Until.findObject(By.clazz(TextView::class.java).text(networkSSID)), timeout)
         device.findObject(UiSelector().text(networkSSID)).click()
-        val passwordInput = device.findObject(UiSelector().resourceId("com.android.settings:id/password"))
-        passwordInput.text = networkPassword
+        device.findObject(UiSelector()
+                .resourceId("com.android.settings:id/password")).apply {
+            text = networkPassword
+        }
         device.findObject(By.clazz(Button::class.java).text("CONNECT")).click()
-
-        // TODO Wait for connectivity
-
+        device.waitForIdle(timeout)
     }
 
     @Test
