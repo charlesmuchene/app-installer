@@ -11,7 +11,7 @@ class InstallerRunner : AndroidJUnitRunner() {
     override fun onCreate(arguments: Bundle?) {
         val name = InstallerRunListener::class.java.canonicalName
         arguments?.run {
-            // TODO putBoolean("debug", false)
+            putBoolean("debug", false)
             putString("listener", name)
         }
         super.onCreate(arguments)
