@@ -122,7 +122,7 @@ class InstallerAutomator {
             waitForExists(timeout)
             text = accountEmail
         }
-        device.findObject(By.descContains("NEXT").res("identifierNext")).click()
+        device.findObject(UiSelector().text("NEXT").resourceId("identifierNext")).click()
         device.waitForIdle()
 
         device.findObject(UiSelector().instance(0)
@@ -130,7 +130,7 @@ class InstallerAutomator {
             waitForExists(timeout)
             text = accountPassword
         }
-        device.findObject(By.descContains("NEXT").res("passwordNext")).click()
+        device.findObject(UiSelector().text("NEXT").resourceId("passwordNext")).click()
         device.waitForIdle()
         device.findObject(UiSelector().className(View::class.java).resourceId("next")).apply {
             waitForExists(timeout)
