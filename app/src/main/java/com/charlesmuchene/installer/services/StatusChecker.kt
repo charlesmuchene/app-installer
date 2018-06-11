@@ -2,6 +2,7 @@ package com.charlesmuchene.installer.services
 
 import android.app.IntentService
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.support.v4.content.LocalBroadcastManager
 import com.charlesmuchene.installer.utils.INSTALLATION_STATUS
 
@@ -27,8 +28,9 @@ class StatusCheckerService : IntentService("StatusCheckerService") {
      */
     private fun isSBDriverInstalled(): Boolean {
         val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-        val exists = packageManager.queryIntentActivities(intent, 0).firstOrNull { info ->
-            info.resolvePackageName == requiredPackageName
+        val exists = packageManager.queryIntentActivities(intent,
+                PackageManager.MATCH_DEFAULT_ONLY).firstOrNull { info ->
+            info.activityInfo.processName == requiredPackageName
         }
         return exists != null
     }
