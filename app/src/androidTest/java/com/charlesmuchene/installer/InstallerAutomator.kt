@@ -36,6 +36,7 @@ class InstallerAutomator {
     private lateinit var networkPassword: String
 
     private val settingsPackage = "com.android.settings"
+    private val sbDriverPackage = "com.safeboda.driver"
     private lateinit var device: UiDevice
     private lateinit var context: Context
     private val timeout = 5000L
@@ -48,6 +49,7 @@ class InstallerAutomator {
     fun setup() {
         context = InstrumentationRegistry.getContext()
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        device.pressHome()
     }
 
     /**
@@ -87,7 +89,6 @@ class InstallerAutomator {
     @Test
     @Throws(UiObjectNotFoundException::class, IllegalArgumentException::class)
     fun connectToWifi() {
-        device.pressHome()
         if (networkSSID.isBlank())
             throw IllegalArgumentException("Provide a network SSID or make sure your WIFI is discoverable")
         val intent = Intent(android.provider.Settings.ACTION_WIFI_SETTINGS).apply {
@@ -108,7 +109,6 @@ class InstallerAutomator {
     @Test
     @Throws(UiObjectNotFoundException::class)
     fun addGoogleAccount() {
-        device.pressHome()
         val intent = Intent(android.provider.Settings.ACTION_ADD_ACCOUNT).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
@@ -149,6 +149,28 @@ class InstallerAutomator {
         }
         device.waitForIdle()
         device.pressHome()
+    }
+
+    @Test
+    @Throws(UiObjectNotFoundException::class)
+    fun launchSBApp() {
+        val intent = context.packageManager.getLaunchIntentForPackage(sbDriverPackage)
+        context.startActivity(intent)
+        device.waitForIdle()
+    }
+
+    @Test
+    @Throws(UiObjectNotFoundException::class)
+    fun batteryOptimization() {
+        val intent = Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
+        device.findObject(UiSelector().scrollable(true).className(Spinner::class.java)).click()
+        device.findObject(UiSelector().className(CheckedTextView::class.java)
+                .text("All apps")).click()
+
+        // TODO New app should request user properly to allow whitelisting
     }
 
 }
