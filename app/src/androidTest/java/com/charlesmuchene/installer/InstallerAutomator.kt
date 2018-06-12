@@ -10,6 +10,7 @@ import android.support.test.filters.LargeTest
 import android.support.test.filters.SdkSuppress
 import android.support.test.runner.AndroidJUnit4
 import android.support.test.uiautomator.*
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.webkit.WebView
 import android.widget.*
@@ -122,9 +123,9 @@ class InstallerAutomator {
             waitForExists(timeout)
             text = accountEmail
         }
-        device.findObject(UiSelector().text("NEXT").resourceId("identifierNext")).click()
-        device.waitForIdle()
-
+        device.findObject(UiSelector().text("NEXT").resourceId("identifierNext"))
+                .clickAndWaitForNewWindow()
+        device.wait(Until.hasObject(By.clazz(EditText::class.java).text("Password")), timeout)
         device.findObject(UiSelector().instance(0)
                 .className(EditText::class.java).resourceId("password")).apply {
             waitForExists(timeout)
@@ -138,9 +139,9 @@ class InstallerAutomator {
         }
         device.waitForIdle()
 
-        UiScrollable(UiSelector().scrollable(true)).run {
+        UiScrollable(UiSelector().scrollable(true).className(RecyclerView::class.java)).run {
             flingForward()
-            scrollForward()
+            flingForward()
         }
         device.waitForIdle()
         device.findObject(UiSelector().text("NEXT").className(Button::class.java))?.apply {
