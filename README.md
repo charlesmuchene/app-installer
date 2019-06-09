@@ -6,8 +6,8 @@ using Android Instrumentation testing framework.
 ## Instructions
 
 Build the artifacts, automator and checker apks. These are placed in the installer engine's 
-artifact directory to be used in the automation process. Remember to change your app's package name
-in *InstallAutomator.apk* file.
+artifact directory to be used in the automation process ([see companion repo](https://github.com/charlesmuchene/app-installer-engine)).
+Remember to change your app's package name in *InstallAutomator.apk* file.
 
 ## Build
 
