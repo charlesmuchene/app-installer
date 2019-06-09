@@ -3,7 +3,7 @@
 package com.charlesmuchene.installer.utils
 
 /**
- * Add any new arguments to the Constants file in the Installer Engine app
+ * Add any new arguments to the matching constants file in the Installer Engine app
  */
 const val NETWORK_SSID = "network_ssid"
 const val ACCOUNT_EMAIL = "account_email"

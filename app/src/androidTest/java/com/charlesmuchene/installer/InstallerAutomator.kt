@@ -23,7 +23,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Automates SB Driver App requirements
+ * Automates app installation
  *
  */
 @LargeTest
@@ -37,7 +37,7 @@ class InstallerAutomator {
     private lateinit var networkPassword: String
 
     private val settingsPackage = "com.android.settings"
-    private val sbDriverPackage = "com.safeboda.driver"
+    private val appPackage = "<package-name>"
     private lateinit var device: UiDevice
     private lateinit var context: Context
     private val timeout = 5000L
@@ -155,7 +155,7 @@ class InstallerAutomator {
     @Test
     @Throws(UiObjectNotFoundException::class)
     fun launchApp() {
-        val intent = context.packageManager.getLaunchIntentForPackage(sbDriverPackage)
+        val intent = context.packageManager.getLaunchIntentForPackage(appPackage)
         context.startActivity(intent)
         device.waitForIdle()
     }
